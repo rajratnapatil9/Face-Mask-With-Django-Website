@@ -3,7 +3,7 @@ imutils==0.5.3
 opencv-python 
 opencv-contrib-python
 numpy==1.19.4
-tensorflow 
+tensorflow-cpu
 whitenoise
 Keras==2.4.3
 Keras-Applications 
