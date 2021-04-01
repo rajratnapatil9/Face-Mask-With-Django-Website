@@ -1,0 +1,6 @@
+django==2.2.5
+imutils==0.5.3
+opencv-python==4.2.0.34
+numpy==1.19.4
+tensorflow==2.3.0
+tensorflow-gpu==2.3.0
