@@ -4,7 +4,6 @@ opencv-python
 opencv-contrib-python
 numpy==1.19.4
 tensorflow 
-tensorflow-gpu==2.3.0
 whitenoise
 Keras==2.4.3
 Keras-Applications 
