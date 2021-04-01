@@ -1,6 +1,6 @@
 django==2.2.5
 imutils==0.5.3
-opencv-python==4.2.0.34
+opencv-python-headless
 opencv-contrib-python
 numpy==1.19.4
 tensorflow-cpu
