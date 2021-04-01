@@ -1,0 +1,23 @@
+
+{% load static%}
+
+<html>
+  <head>
+    <center><title>Face Mask Detector</title></center>
+  </head>
+  <body>
+  <center><h1>Live Face Mask Detector</h1></center>
+<center><img src="{% url 'mask_feed'%}"  width="300" height="300"></center>
+<br>
+  <img src="{% static 'images\1_3.jpeg' %}" alt="Demo image-Front Door"  width="600" height="300" style="float:right">
+  <img src="{% static 'images\F_B.jpg' %}" alt="Demo image-Automobile" width="600" height="300" style="float:center">
+ <p><b>Demo 1: Deployment at Front Door Entry as a Health Safety Control</b></p>
+    <p>Open the website on an ipad/Tablet with lockdown browser at the entry. Connect the video input to the webcam for the front desk person to allow or deny entry on the gate.</p>
+<p><b>Demo 2: Deployment in Automobiles as a Health Safety Control</b></p>
+    <p>Open the website on an integrated system. The system may be so configured either wirelessly or wired that if someone in the car is not wearing a mask at the start of the drive, the car wont start. Consider the way we configured seat belt safety.
+
+
+
+  </body>
+</html>
+
