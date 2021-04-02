@@ -1,3 +1,4 @@
+Python 3.8
 django
 imutils
 numpy
@@ -7,6 +8,6 @@ whitenoise
 Keras
 Keras-Applications 
 Keras-Preprocessing
-gunicorn
+gunicorn 20.0.4
 
 
