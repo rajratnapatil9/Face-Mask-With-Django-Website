@@ -8,5 +8,9 @@ Keras
 Keras-Applications 
 Keras-Preprocessing
 gunicorn==20.0.4
-
+aiortc==1.2.0
+av==8.0.3
+streamlit==0.78.0
+streamlit_webrtc==0.7.2
+typing_extensions==3.7.4.3
 
