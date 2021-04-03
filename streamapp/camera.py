@@ -24,7 +24,7 @@ maskNet = load_model(os.path.join(settings.BASE_DIR, 'face_detector/mask_detecto
 
 class VideoCamera(object):
     def __init__(self):
-        self.video = cv2.VideoCapture(0)
+        self.video = cv2.VideoCapture(1)
 
     def __del__(self):
         self.video.release()
@@ -51,7 +51,7 @@ class VideoCamera(object):
 
 class MaskDetect(object):
     def __init__(self):
-        self.vs = VideoStream(src=0).start()
+        self.vs = VideoStream(src=1).start()
 
     def __del__(self):
         cv2.destroyAllWindows()
