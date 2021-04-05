@@ -22,74 +22,13 @@ faceNet = cv2.dnn.readNet(prototxtPath, weightsPath)
 maskNet = load_model(os.path.join(settings.BASE_DIR, 'face_detector/mask_detector.model.h5'))
 
 
-import logging
-import logging.handlers
-import queue
-import urllib.request
-from pathlib import Path
-from typing import List, NamedTuple
+class VideoCamera(object):
+    def __init__(self):
+        self.video = cv2.VideoCapture(0)
 
-try:
-    from typing import Literal
-except ImportError:
-    from typing_extensions import Literal  # type: ignore
+    def __del__(self):
+        self.video.release()
 
-import av
-#import cv2
-import numpy as np
-import streamlit as st
-from aiortc.contrib.media import MediaPlayer
-
-from streamlit_webrtc import (
-    ClientSettings,
-    VideoTransformerBase,
-    WebRtcMode,
-    webrtc_streamer,
-)
-
-HERE = Path(__file__).parent
-
-logger = logging.getLogger(__name__)
-
-
-
-# #
-
-
-WEBRTC_CLIENT_SETTINGS = ClientSettings(
-    rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]},
-    media_stream_constraints={"video": True, "audio": True},
-)
-
-
-def main():
-    st.header("WebRTC demo")
-
-    object_detection_page = "Real time object detection (sendrecv)"
-    video_filters_page = (
-        "Real time video transform with simple OpenCV filters (sendrecv)"
-    )
-    streaming_page = (
-        "Consuming media files on server-side and streaming it to browser (recvonly)"
-    )
-    sendonly_page = "WebRTC is sendonly and images are shown via st.image() (sendonly)"
-    loopback_page = "Simple video loopback (sendrecv)"
-    app_mode = st.sidebar.selectbox(
-        "Choose the app mode",
-        [
-            mask_detection_page,
-            
-        ],
-    )
-    st.subheader(app_mode)
-
-    if app_mode ==  mask_detection_page:
-        app_mask_filter()
-
-
-def app_mask_filter():
-   
-  class MobileNetSSDVideoTransformer(VideoTransformerBase):
     def get_frame(self):
         success, image = self.video.read()
         # We are using Motion JPEG, but OpenCV defaults to capture raw images,
@@ -105,6 +44,18 @@ def app_mask_filter():
         #data = []
         #data.append(jpeg.tobytes())
         return jpeg.tobytes()
+
+
+
+
+
+class MaskDetect(object):
+    def __init__(self):
+        self.vs = VideoStream(src=0).start()
+
+    def __del__(self):
+        cv2.destroyAllWindows()
+
     def detect_and_predict_mask(self, frame, faceNet, maskNet):
         # grab the dimensions of the frame and then construct a blob
         # from it
@@ -165,6 +116,7 @@ def app_mask_filter():
         # return a 2-tuple of the face locations and their corresponding
         # locations
         return (locs, preds)
+
     def get_frame(self):
          frame = self.vs.read()
          frame = imutils.resize(frame, width=650)
@@ -195,45 +147,6 @@ def app_mask_filter():
             cv2.rectangle(frame, (startX, startY), (endX, endY), color, 2)
          ret, jpeg = cv2.imencode('.jpg', frame)
          return jpeg.tobytes()
-    webrtc_ctx = webrtc_streamer(
-        key="object-detection",
-        mode=WebRtcMode.SENDRECV,
-        client_settings=WEBRTC_CLIENT_SETTINGS,
-        video_transformer_factory=MobileNetSSDVideoTransformer,
-        async_transform=True,
-    )
 
-    confidence_threshold = st.slider(
-        "Confidence threshold", 0.0, 1.0, DEFAULT_CONFIDENCE_THRESHOLD, 0.05
-    )
-    if webrtc_ctx.video_transformer:
-        webrtc_ctx.video_transformer.confidence_threshold = confidence_threshold
 
-    if st.checkbox("Show the detected labels", value=True):
-        if webrtc_ctx.state.playing:
-            labels_placeholder = st.empty()
-            # NOTE: The video transformation with object detection and
-            # this loop displaying the result labels are running
-            # in different threads asynchronously.
-            # Then the rendered video frames and the labels displayed here
-            # are not strictly synchronized.
-            while True:
-                if webrtc_ctx.video_transformer:
-                    result = webrtc_ctx.video_transformer.result_queue.get()
-                    labels_placeholder.table(result)
-                else:
-                    break
 
-if __name__ == "__main__":
-    logging.basicConfig(
-        format="[%(asctime)s] %(levelname)7s from %(name)s in %(filename)s:%(lineno)d: "
-        "%(message)s",
-        force=True,
-    )
-
-    logger.setLevel(level=logging.DEBUG)
-
-    st_webrtc_logger = logging.getLogger("streamlit_webrtc")
-    st_webrtc_logger.setLevel(logging.DEBUG)
-
-    main()
